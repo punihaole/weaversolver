@@ -1,7 +1,7 @@
-from pathlib import Path
 from unittest import TestCase
 
-from weaversolver.game import GamePlayer, can_change_word, find_all_possible_next_words
+from weaversolver.game import GamePlayer, can_change_word, find_all_possible_next_words, play_game, GameIsImpossible, \
+    Strategy
 from weaversolver.words import WordBank
 
 
@@ -29,8 +29,25 @@ class TestCase(TestCase):
         self.assertListEqual(['work', 'bord', 'ward'], possibilities)
 
     def test_integration(self):
-        word_bank = WordBank()
-        game = GamePlayer(word_bank, 'word', 'work')
-        winning_game = game.play()
-        print(winning_game)
+        winning_game = play_game("word", "work")
         self.assertListEqual(['word', 'work'], winning_game)
+
+    def test_impossible_game_timeout(self):
+        with self.assertRaises(GameIsImpossible):
+            word_bank = WordBank()
+            game = GamePlayer(word_bank, "abos", "abri",
+                              strategy=Strategy(timeout=0.1, max_steps=float("inf")))
+            game.play()
+
+    def test_impossible_game_max_steps(self):
+        with self.assertRaises(GameIsImpossible):
+            word_bank = WordBank()
+            game = GamePlayer(word_bank, "abos", "abri",
+                              strategy=Strategy(timeout=float("inf"), max_steps=1_000))
+            game.play()
+
+    def test_hard_game(self):
+        word_bank = WordBank()
+        game = GamePlayer(word_bank, "vile", "foul")
+        ladder = game.play()
+        self.assertEqual(7, len(ladder))
