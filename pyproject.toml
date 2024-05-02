@@ -3,6 +3,10 @@ name = "weaversolver"
 version = "0.1.2"
 description = ""
 authors = ["Tom Punihaole <tom.punihaole@gmail.com>"]
+include = [
+    'weaversolver',
+    'weaversolver/data/*'
+]
 
 [tool.poetry.dependencies]
 python = "^3.12"
@@ -13,4 +17,3 @@ python = "^3.12"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
-include = ['weaversolver/data/*']
